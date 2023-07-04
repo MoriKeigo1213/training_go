@@ -6,6 +6,7 @@ import "fmt"
 // 入力したゲームIDを担当した開発者を出力してください。
 // 出力例:[{0 Ichiro [0]} {1 Jiro [2]} {3 Shiro [0 2]} {5 Rokuro [2 3]}]
 // ↑ 改行されていても、配列出力でなくてもOK ただし重複出力はNG
+// memo: ループ文のネストは浅く（2階層まで）
 
 type Game struct {
 	GameID   uint8
