@@ -23,12 +23,20 @@ func main() {
 		},
 	}
 
-	insertGame()
+	games = insertGame(games)
 
 	fmt.Println(games)
-	//fmt.Println()
 }
 
-func insertGame() {
+func insertGame(games []game) []game {
+	var newGame game
 
+	fmt.Println("ゲームIDを入力してください:")
+	fmt.Scan(&newGame.GameID)
+
+	fmt.Println("ゲームの名前を入力してください:")
+	fmt.Scan(&newGame.GameName)
+
+	games = append(games, newGame)
+	return games
 }
