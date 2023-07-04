@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 // 課題2 構造体のスライスを扱ってみよう2
 // 入力したゲームIDを担当した開発者を出力してください。
@@ -20,9 +24,49 @@ type Developer struct {
 }
 
 func main() {
-	games := getGamesByGameID([]uint8{0, 2})
+	fmt.Println("ゲームIDを入力してください")
+	var input string
+	fmt.Scan(&input)
+
+	inputs := strings.Split(input, " ")
+	gameIDs := make([]uint8, len(inputs))
+	for i, input := range inputs {
+		id, _ := strconv.Atoi(input)
+		gameIDs[i] = uint8(id)
+	}
+
+	games := getGamesByGameID(gameIDs)
 	developers := getDevelopers()
 
+	developersWithGames := findDevelopersByGames(games, developers)
+
+	fmt.Println(developersWithGames)
+}
+
+func findDevelopersByGames(games []Game, developers []Developer) []Developer {
+	var result []Developer
+	for _, game := range games {
+		for _, developer := range developers {
+			for _, gameID := range developer.GameIDs {
+				if game.GameID == gameID && !contains(result, developer) {
+					result = append(result, developer)
+					break
+				}
+			}
+		}
+	}
+
+	return result
+}
+
+func contains(developers []Developer, developer Developer) bool {
+	for _, d := range developers {
+		if d.DeveloperID == developer.DeveloperID {
+			return true
+		}
+	}
+
+	return false
 }
 
 // この関数の処理はイジらないでください。
@@ -91,6 +135,5 @@ func getDevelopers() []Developer {
 			GameIDs:       []uint8{2, 3},
 		},
 	}
-
 	return developers
 }
