@@ -1,11 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 // 課題2 構造体のスライスを扱ってみよう2
 // 入力したゲームIDを担当した開発者を出力してください。
 // 出力例:[{0 Ichiro [0]} {1 Jiro [2]} {3 Shiro [0 2]} {5 Rokuro [2 3]}]
 // ↑ 改行されていても、配列出力でなくてもOK ただし重複出力はNG
+// memo: ループ文のネストは浅く（2階層まで）
 
 type Game struct {
 	GameID   uint8
@@ -19,9 +24,35 @@ type Developer struct {
 }
 
 func main() {
-	games := getGamesByGameID([]uint8{0, 2})
-	developers := getDevelopers()
+	fmt.Println("ゲームIDを入力してください")
+	var input string
+	fmt.Scan(&input)
 
+	inputs := strings.Split(input, " ")
+	gameIDs := make([]uint8, len(inputs))
+	for i, input := range inputs {
+		id, _ := strconv.Atoi(input)
+		gameIDs[i] = uint8(id)
+	}
+
+	developers := getDevelopers()
+	developersMap := createDevelopersMap(developers)
+
+	for _, gameID := range gameIDs {
+		if devs, ok := developersMap[gameID]; ok {
+			fmt.Println(devs)
+		}
+	}
+}
+
+func createDevelopersMap(developers []Developer) map[uint8][]Developer {
+	developersMap := make(map[uint8][]Developer)
+	for _, developer := range developers {
+		for _, gameID := range developer.GameIDs {
+			developersMap[gameID] = append(developersMap[gameID], developer)
+		}
+	}
+	return developersMap
 }
 
 // この関数の処理はイジらないでください。
@@ -90,6 +121,5 @@ func getDevelopers() []Developer {
 			GameIDs:       []uint8{2, 3},
 		},
 	}
-
 	return developers
 }
