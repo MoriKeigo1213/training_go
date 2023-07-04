@@ -35,38 +35,24 @@ func main() {
 		gameIDs[i] = uint8(id)
 	}
 
-	games := getGamesByGameID(gameIDs)
 	developers := getDevelopers()
+	developersMap := createDevelopersMap(developers)
 
-	developersWithGames := findDevelopersByGames(games, developers)
-
-	fmt.Println(developersWithGames)
-}
-
-func findDevelopersByGames(games []Game, developers []Developer) []Developer {
-	var result []Developer
-	for _, game := range games {
-		for _, developer := range developers {
-			for _, gameID := range developer.GameIDs {
-				if game.GameID == gameID && !contains(result, developer) {
-					result = append(result, developer)
-					break
-				}
-			}
+	for _, gameID := range gameIDs {
+		if devs, ok := developersMap[gameID]; ok {
+			fmt.Println(devs)
 		}
 	}
-
-	return result
 }
 
-func contains(developers []Developer, developer Developer) bool {
-	for _, d := range developers {
-		if d.DeveloperID == developer.DeveloperID {
-			return true
+func createDevelopersMap(developers []Developer) map[uint8][]Developer {
+	developersMap := make(map[uint8][]Developer)
+	for _, developer := range developers {
+		for _, gameID := range developer.GameIDs {
+			developersMap[gameID] = append(developersMap[gameID], developer)
 		}
 	}
-
-	return false
+	return developersMap
 }
 
 // この関数の処理はイジらないでください。
